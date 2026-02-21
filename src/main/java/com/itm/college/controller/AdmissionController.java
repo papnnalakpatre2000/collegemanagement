@@ -2,14 +2,17 @@ package com.itm.college.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import com.itm.college.model.Student;
 import com.itm.college.service.AdmissionService;
 import java.util.List;
 import java.io.IOException;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/admission")
 public class AdmissionController {
@@ -17,9 +20,10 @@ public class AdmissionController {
 	@Autowired
 	private AdmissionService admissionService;
 
-	@PostMapping("/registerStudent")
-	public ResponseEntity<String> registerStudent(@RequestBody Student student) {
+	@PostMapping(value ="/registerStudent",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> registerStudent(@RequestPart("student") Student student,@RequestPart("file") MultipartFile file) throws IOException{
 		try {
+			student.setProfilePhoto(file.getBytes());
 			Student savedStudent = admissionService.registerStudent(student);
 			return ResponseEntity.status(HttpStatus.CREATED)
 					.body("Student registered successfully with ID: " + savedStudent.getId());
@@ -85,4 +89,15 @@ public class AdmissionController {
 					.body("Deletion failed: " + e.getMessage());
 		}
 	}
+	
+	@GetMapping("/getProfilePhoto/{id}")
+	public ResponseEntity<byte[]> getProfilePhoto(@PathVariable String id) {
+
+	    Student student = admissionService.getStudentById(id);
+
+	    return ResponseEntity.ok()
+	            .contentType(MediaType.IMAGE_JPEG) // or IMAGE_PNG
+	            .body(student.getProfilePhoto());
+	}
+
 }

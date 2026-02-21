@@ -38,9 +38,16 @@ public class Student {
 
 	@Column(nullable = false)
 	private Double fees;
+	
+	@Column(nullable = false)
+	private Double result10;
+	
+	@Column(nullable = false)
+	private Double result12;
 
 	@Column(columnDefinition = "VARCHAR(50) DEFAULT 'PENDING'")
 	private String status;
+	
 	
 
 
@@ -58,8 +65,12 @@ public class Student {
 
 	
 
+
+
+
 	public Student(String name, String email, String phone, String course, LocalDate dateOfBirth, String address,
-			byte[] profilePhoto, LocalDate admissionDate, Double fees, String status) {
+			byte[] profilePhoto, LocalDate admissionDate, Double fees, Double result10, Double result12,
+			String status) {
 		super();
 		this.name = name;
 		this.email = email;
@@ -70,10 +81,26 @@ public class Student {
 		this.profilePhoto = profilePhoto;
 		this.admissionDate = admissionDate;
 		this.fees = fees;
+		this.result10 = result10;
+		this.result12 = result12;
 		this.status = status;
 	}
 
+	public Double getResult10() {
+		return result10;
+	}
 
+	public void setResult10(Double result10) {
+		this.result10 = result10;
+	}
+
+	public Double getResult12() {
+		return result12;
+	}
+
+	public void setResult12(Double result12) {
+		this.result12 = result12;
+	}
 
 	public String getId() { 
 		return id; 
