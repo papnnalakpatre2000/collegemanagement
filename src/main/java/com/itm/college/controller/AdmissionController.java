@@ -12,7 +12,7 @@ import com.itm.college.service.AdmissionService;
 import java.util.List;
 import java.io.IOException;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*", allowCredentials = "true")
 @RestController
 @RequestMapping("/api/admission")
 public class AdmissionController {
@@ -20,18 +20,7 @@ public class AdmissionController {
 	@Autowired
 	private AdmissionService admissionService;
 
-	@PostMapping(value ="/registerStudent",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<String> registerStudent(@RequestPart("student") Student student,@RequestPart("file") MultipartFile file) throws IOException{
-		try {
-			student.setProfilePhoto(file.getBytes());
-			Student savedStudent = admissionService.registerStudent(student);
-			return ResponseEntity.status(HttpStatus.CREATED)
-					.body("Student registered successfully with ID: " + savedStudent.getId());
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-					.body("Registration failed: " + e.getMessage());
-		}
-	}
+	
 
 	@PostMapping("/uploadProfilePhoto/{id}")
 	public ResponseEntity<String> uploadProfilePhoto(@PathVariable String id, @RequestParam("file") MultipartFile file) {
@@ -68,11 +57,38 @@ public class AdmissionController {
 		return ResponseEntity.ok(students);
 	}
 
-	@PutMapping("/updateStudent/{id}")
-	public ResponseEntity<String> updateStudent(@PathVariable String id, @RequestBody Student student) {
+	@GetMapping("/searchStudents")
+	public ResponseEntity<List<Student>> searchStudents(@RequestParam(name = "name", required = false) String name) {
+		List<Student> students = admissionService.searchStudentsByName(name);
+		return ResponseEntity.ok(students);
+	}
+
+	@PostMapping(value ="/registerStudent",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> registerStudent(@RequestPart("student") Student student,@RequestPart("file") MultipartFile file) throws IOException{
 		try {
+			student.setProfilePhoto(file.getBytes());
+			Student savedStudent = admissionService.registerStudent(student);
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body("Student registered successfully with ID: " + savedStudent.getId());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("Registration failed: " + e.getMessage());
+		}
+	}
+
+	@PutMapping(value = "/updateStudent/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ResponseEntity<String> updateStudent(@PathVariable String id, 
+			@RequestPart("student") Student student,
+			@RequestPart(value = "file", required = false) MultipartFile file) {
+		try {
+			if (file != null && !file.isEmpty()) {
+				student.setProfilePhoto(file.getBytes());
+			}
 			admissionService.updateStudent(id, student);
 			return ResponseEntity.ok("Student ID: " + id + " updated successfully");
+		} catch (IOException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+					.body("File upload failed: " + e.getMessage());
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 					.body("Update failed: " + e.getMessage());

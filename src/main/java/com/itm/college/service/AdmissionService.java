@@ -29,6 +29,13 @@ public class AdmissionService {
 		return studentRepository.findAll();
 	}
 
+	public List<Student> searchStudentsByName(String name) {
+		if (name == null || name.isBlank()) {
+			return getAllStudents();
+		}
+		return studentRepository.findByNameContainingIgnoreCase(name);
+	}
+
 	public void updateStudent(String id, Student studentDetails) {
 		Student student = getStudentById(id);
 		student.setName(studentDetails.getName());
@@ -38,6 +45,9 @@ public class AdmissionService {
 		student.setAddress(studentDetails.getAddress());
 		student.setFees(studentDetails.getFees());
 		student.setStatus(studentDetails.getStatus());
+		if(studentDetails.getProfilePhoto() != null) {
+			student.setProfilePhoto(studentDetails.getProfilePhoto());
+		}
 		studentRepository.save(student);
 	}
 
