@@ -30,6 +30,9 @@ public class Student {
 	@Column(name = "address")
 	private String address;
 
+	@Column(name = "gender")
+	private String gender;
+
 	@Column(name = "profile_photo", columnDefinition = "LONGBLOB")
 	private byte[] profilePhoto;
 
@@ -69,7 +72,7 @@ public class Student {
 
 
 	public Student(String name, String email, String phone, String course, LocalDate dateOfBirth, String address,
-			byte[] profilePhoto, LocalDate admissionDate, Double fees, Double result10, Double result12,
+			String gender, byte[] profilePhoto, LocalDate admissionDate, Double fees, Double result10, Double result12,
 			String status) {
 		super();
 		this.name = name;
@@ -78,12 +81,21 @@ public class Student {
 		this.course = course;
 		this.dateOfBirth = dateOfBirth;
 		this.address = address;
+		this.gender = gender;
 		this.profilePhoto = profilePhoto;
 		this.admissionDate = admissionDate;
 		this.fees = fees;
 		this.result10 = result10;
 		this.result12 = result12;
 		this.status = status;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public Double getResult10() {

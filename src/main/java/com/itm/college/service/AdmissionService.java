@@ -45,6 +45,7 @@ public class AdmissionService {
 		student.setAddress(studentDetails.getAddress());
 		student.setFees(studentDetails.getFees());
 		student.setStatus(studentDetails.getStatus());
+		student.setGender(studentDetails.getGender());
 		if(studentDetails.getProfilePhoto() != null) {
 			student.setProfilePhoto(studentDetails.getProfilePhoto());
 		}
